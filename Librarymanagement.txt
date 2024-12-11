@@ -1,0 +1,198 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct Book
+{
+ int id;
+ char title[50];
+ char author[50];
+ int year;
+ struct Book *next;
+};
+struct Book *head;
+void addBook();
+void deleteBook(int id);
+void searchBook(int id);
+void displayBooks();
+void updateBook(int id);
+int countBooks();
+int main() 
+{
+   int ch,id1;
+   do
+   {    
+       printf("\nWelcome to Library Management System");
+       printf("\nOur official menu consist of :");
+printf("\n1.]Add Book\n2.]Delete Book\n3.]Display Books\n4.]Search Book\n5.]Number of Books in the library\n6.]Update Book\n7.]Exit");
+       printf("\nEnter choice:");
+       scanf("%d",&ch);
+       switch(ch)
+       {
+       case 1 : addBook();
+                break;
+       case 2 : printf("\nFor deleting the book, we need BookId");
+                printf("\nPlease enter Book Id :");
+                scanf("%d",&id1);
+                deleteBook(id1);
+                break;
+       case 3 : displayBooks();
+                break;
+       case 4 : printf("\nFor searching the book, we need BookId");
+                printf("\nEnter Book Id to be searched :");
+                scanf("%d",&id1);
+                searchBook(id1);
+                break;
+                
+       case 5  :int res=countBooks();
+                printf("\nNo of books in the library are : %d",res);
+                break;
+       case 6 : printf("\nFor Updating the book values, we need BookId");
+                printf("Enter Book Id :");
+                scanf("%d",&id1);
+                updateBook(id1);
+                break;
+       case 7:  exit(0);
+       default: printf("\nPlease enter a valid choice !");
+       }
+   }
+  while(ch!=7);
+    return 0;
+}
+void addBook()
+{ 
+    struct Book *temp;
+    struct Book *newbook=(struct Book*)malloc(sizeof(struct Book));
+    printf("\nEnter Book Id :");
+    scanf("%d",&newbook->id);
+    printf("\nEnter Title :");
+    getchar();
+    fgets(newbook->title, 100, stdin);
+    printf("\nEnter Author :");
+    fgets(newbook->author,100,stdin);
+    printf("\nEnter year of publication :");
+    scanf("%d",&newbook->year);
+    if(head==NULL)
+    {
+      head=newbook;
+    }
+    else
+    {
+        temp=head;
+        while(temp->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=newbook;
+    }
+    printf("\nBook added successfully");
+}
+
+void deleteBook(int id2)
+{
+  struct Book *temp,*ptemp;
+  temp=head;
+      if (temp == NULL)
+      {
+        printf("There is no book available with ID no: %d\n", id2);
+        return;
+      }
+      if (temp != NULL && temp->id == id2) 
+      {
+        head = temp->next; 
+        free(temp);        
+        printf("Book with ID %d has been deleted.\n", id2);
+        return;
+      }
+    while (temp != NULL && temp->id != id2) 
+    {
+        ptemp = temp;
+        temp = temp->next;
+    }
+    ptemp->next = temp->next;
+    free(temp);
+
+    printf("Book with ID %d has been deleted.\n", id2);
+}
+void displayBooks()
+{
+ struct Book *temp;
+ temp=head;
+ printf("\nLibrary consist of following Books :");
+ 
+    printf("Books in the library:\n");
+    while (temp != NULL)
+    {
+printf(" ID : %d  Title : %s  Author : %s  Year :%d ",temp->id,temp->title, temp->author, temp->year);
+        temp = temp->next; 
+    }
+}
+void searchBook(int id2)
+{
+    struct Book *temp;
+    temp=head;
+    if(temp==NULL)
+    {
+        printf("No books available to search");
+        return;
+    }
+    while(temp->next!=NULL)
+    {
+        temp=temp->next;
+        if(temp->id==id2)
+       printf(" ID : %d  Title : %s  Author : %s  Year :%d \n",temp->id,temp->title, temp->author, temp->year);
+    }
+}
+
+int countBooks()
+{
+    struct Book *temp;
+    int count=0;
+    temp=head;
+    if(temp==NULL)
+    {
+     printf("\nNo books to count");
+    }
+    else
+    {
+    while(temp!=NULL)
+    {
+        temp=temp->next;
+        count++;
+    }
+    return(count);
+    }
+}
+
+void updateBook(int id2)
+{
+    struct Book *temp;
+    temp=head;
+    if(temp==NULL)
+    {
+        printf("\nNo books available for modification");
+        return;
+    }
+    else
+    {
+        while(temp!=NULL)
+        {
+            if(temp->id==id2)
+            {
+                printf("Book of ID number %d has been found",id2);
+                printf("\nPlease enter following details to modify your details");
+                printf("\nEnter modified Book Id :");
+                scanf("%d",&temp->id);
+                printf("\nEnter modified Book Title :");
+                scanf("%s",temp->title);
+                printf("\nEnter modified Book Author :");
+                scanf("%s",temp->author);
+                printf("\nEnter modified Book year of publication :");
+                scanf("%d",&temp->year);
+                printf("Book details updated successfully!\n");
+                return;
+            }
+            temp=temp->next;
+        }
+        printf("Book with ID %d not found in the library\n", id2);
+    }
+}
